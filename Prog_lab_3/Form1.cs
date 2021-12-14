@@ -50,29 +50,28 @@ namespace Prog_lab_3
         double findMin()
         {
             double PHI = (1 + Math.Sqrt(5)) / 2;
-
             double x1, x2, a = bottomBorder, b = topBorder;
+
             while (true)
             {
                 x1 = b - (b - a) / PHI;
                 x2 = a + (b - a) / PHI;
+                minPointList.Add(new Point((a + b) / 2, calculateValuePoint((a + b) / 2)));
                 if (calculateValuePoint(x1) >= calculateValuePoint(x2))
                 {
                     a = x1;
-                    minPointList.Add(new Point(x1, calculateValuePoint(x1)));
                 }
                 else
                 {
                     b = x2;
-                    minPointList.Add(new Point(x2, calculateValuePoint(x2)));
                 }
+                
 
                 if (Math.Abs(b - a) < accuracy)
                 {
-                    break;
+                    break;  
                 }
             }
-            minPointList.Add(new Point((a + b) / 2, calculateValuePoint((a + b) / 2)));
             return (a + b) / 2;
         }
 
@@ -138,6 +137,15 @@ namespace Prog_lab_3
                             MessageBox.Show("Границы функции меньше точности, измените входные данные");
                             return;
                         }
+                        GraphPane mypane = zedGraphControl1.GraphPane;
+
+                        mypane.XAxis.Scale.Min = bottomBorder;
+                        mypane.XAxis.Scale.Max = topBorder;
+
+                        // По оси Y установим автоматический подбор масштаба
+                        mypane.YAxis.Scale.MinAuto = true;
+                        mypane.YAxis.Scale.MaxAuto = true;
+                        mypane.IsBoundedRanges = true;
 
                         double xMinPoint = findMin();
                         double yMinPoint = calculateValuePoint(xMinPoint);
@@ -227,7 +235,7 @@ namespace Prog_lab_3
         private void calculationGraphPoints()
         {
             list.Clear();
-            for (double x = bottomBorder; x < topBorder; x += 0.01)
+            for (double x = bottomBorder; x < topBorder; x += (topBorder - bottomBorder) / 2000)
             {
                 try
                 {
